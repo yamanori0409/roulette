@@ -13,7 +13,6 @@ body {
     width: 100%;
     background-color: darkgray;
     font-family: 'Arial', sans-serif;
-    // font-family: "Yu Gothic", YuGothic, Verdana, 'Hiragino Kaku Gothic ProN','Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', 'メイリオ', Meiryo, sans-serif;
 }
 
 .container {
@@ -108,8 +107,8 @@ $chart-radius: 400px;
 }
 
 #myPieChart {
-    width: 400px; //$chart-radius;
-	height: 400px; //$chart-radius;
+    width: 400px;
+	height: 400px;
 	max-width: 900px;
 	margin: 0 auto;
     border-radius: 50%;
@@ -122,5 +121,4 @@ $chart-radius: 400px;
     height: 20px;
     border-radius: 50%;
 	background: darkgray;
-	//display: none;
 }

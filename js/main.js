@@ -125,7 +125,7 @@ function drawPieChart() {
 	var second = jikan.getSeconds();
 	var largeIndex = -1;
 
-	// 秒が3の倍数の場合、どれか一つの系統だけ大きくする。
+	// 秒が3の倍数の場合、どれか一つの系統だけ大きくする。（ネタ仕様）
 	if (second % 3 == 0) {
 		largeIndex = Math.floor(Math.random() * index);
 	}
@@ -142,6 +142,7 @@ function drawPieChart() {
 	}
 	// 配列をランダムに入れ替える。
 	labelList = shuffle(labelList);
+	// 色をランダムにする。
 	//backgroundColorList = shuffle(backgroundColorList);
 
 	// その都度グラフインスタンスを生成するとメモリリークを起こすらしいので、
@@ -151,7 +152,6 @@ function drawPieChart() {
 		myPieChart = new Chart(ctx, options);
 	}
 
-	// myPieChart.type = 'pie'; 
 	myPieChart.data = {
 		labels: labelList,
 		datasets: [{
@@ -164,10 +164,11 @@ function drawPieChart() {
 	var startButton = document.getElementById('btn-start');
 	startButton.style.display = "inline-block";
 
+	// ルーレットの結果マーク設定
 	var moveElement = document.getElementById('triangle-mark');
-	moveElement.style.backgroundColor = "darkgray";
 	moveElement.style.left = '0px';
 	moveElement.style.top = '0px';
+	moveElement.style.backgroundColor = "darkgray";
 
 	myPieChart.update();
 }
@@ -179,21 +180,17 @@ function drawPieChart() {
 function drawCirclePlot() {
 	// 円周上を移動する要素
 	var moveElement = document.getElementById('triangle-mark');
-
 	moveElement.style.display = "block";
-	//moveElement.style.left = '0px';
-	//moveElement.style.top = '0px';
-	//moveElement.update;
 
 	// 円の角度
 	var angle = 0;
 
-	// 乱数を生成
+	// 乱数を生成（1.00~1.18で乱数を生成すればいい具合にばらけるので）
 	var index = Math.floor(Math.random() * 19);
-	// 移動の増分（1.00~1.18で乱数を生成すればいい具合にばらける）
+	// 移動距離
 	var incremental = 1 + index * 0.01;
-
-	var incrementalSpan = 0.0006; 
+	// 移動距離の増分
+	var incrementalSpan = -0.0006; 
 
 	// アニメーションの実行
 	var timer = setInterval(function () {
@@ -202,7 +199,6 @@ function drawCirclePlot() {
 	
 	// アニメーションの処理
 	function circumference() {
-		
 		if (moveElement.style.backgroundColor != "black") {
 			moveElement.style.backgroundColor = "black";
 		}
@@ -218,25 +214,30 @@ function drawCirclePlot() {
 		var moveX = Math.cos(Math.PI / 180 * angle) * radius + centerX;
 		var moveY = Math.sin(Math.PI / 180 * angle) * radius + centerY;
 		
-		// 座標位置に移動
+		// 座標位置に結果マークを移動
 		moveElement.style.left = moveX + 'px';
 		moveElement.style.top = moveY + 'px';
 
-		// 角速度を加算するが、少しづつ加算する量を減らす。
+		// 角速度を加算する。
 		angle += incremental;
 		
 		if (incremental >= 0) {
-			// 角速度を一定量ずつ減らしていくことで減速し、最終的に移動を止める。
-			incremental -= incrementalSpan;
+			// 角速度に加算する値を一定量ずつ減らしていくことで減速し、最終的に移動を止める。
+			incremental += incrementalSpan;
 		}
 		else {
 			// 止まったら停止。
 			clearInterval(timer);
 
+			// 結果の描画処理
 			drawResult();
 		}
 	}
 
+	/**
+	 * ラジアンを正の数値に補正
+	 * @param {*} radius 
+	 */
 	function getAbs(radius) {
 		if (radius < 0) {
 			radius += 2 * Math.PI;
@@ -244,34 +245,32 @@ function drawCirclePlot() {
 		return radius;
 	}
 
+	/**
+	 * 結果描画処理
+	 */
 	function drawResult() {
 		// 円の中心座標
 		var centerX = myPieChart.canvas.offsetLeft + myPieChart.width / 2 - 10;
 		var centerY = myPieChart.height / 2 + 10;
 		
-		// 円の半径
-		var radius = myPieChart.height / 2;
-
 		var moveElement = document.getElementById('triangle-mark');
-					
+
+		// 結果マークが止まった位置のラジアン
 		var r = Math.atan2(moveElement.style.top.replace("px", "") - centerY, moveElement.style.left.replace("px", "") - centerX);
 		r = getAbs(r);
-		console.log(r);
 
 		// 円の接点から当たり判定を行う。
-		var ctx = myPieChart.ctx;
 		myPieChart.data.datasets.forEach(function (dataset, i) {
 			var meta = myPieChart.getDatasetMeta(i);
 			if (!meta.hidden) {
-				meta.data.forEach(function (element, index) {
+				meta.data.forEach(function (element) {
 					var start = getAbs(element._model.startAngle);
 					var end = getAbs(element._model.endAngle);
 					
 					if (end === 0) {
+						// 最終のアングルがちょうど0になった場合の補正。
 						end = 10;
 					}
-
-					console.log(element._model.label + ":" + start + " - " + end);
 
 					if (start <= r && r <= end) {
 						var resultElement = document.getElementById('result');
@@ -281,30 +280,10 @@ function drawCirclePlot() {
 							items: {src: '#small-dialog'},
 							type: 'inline', 
 							closeBtnInside: true,
-							//modal: true,
 						}, 0);
-
 					}
 				})
 			}
 		})
 	}
 }
-
-$(document).ready(function() {
-	$('.popup-with-zoom-anim').magnificPopup({
-		type: 'inline',
-
-		fixedContentPos: false,
-		fixedBgPos: true,
-
-		overflowY: 'auto',
-
-		closeBtnInside: true,
-		preloader: false,
-		
-		midClick: true,
-		removalDelay: 300,
-		mainClass: 'my-mfp-zoom-in'
-	});
- });

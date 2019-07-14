@@ -17,7 +17,8 @@
 
 <body>
 	<div class="container" id="base">
-		<h1>ルーレット</h1>
+		<h1>ルーレットβ</h1>
+		<!-- 人数入力欄 -->
 		<div class="nice-wrap">
 			<input id="indexCount" class="nice-textbox" type="text" />
 			<label class="nice-label" for="Username">人数</label>
@@ -26,16 +27,16 @@
 			<a href="#" class="btn-push" onclick="drawPieChart()">作る</a>
 		</div>
 
+		<!-- ルーレットのマーク -->
 		<div id="triangle-mark"></div>
+		
+		<!-- ルーレット本体 -->
 		<canvas id="myPieChart"></canvas>
 		<div class="btn-push-wrapper" style="height:50px;">
 			<a href="#" id="btn-start" class="btn-start" onclick="drawCirclePlot()">スタート</a>
 		</div>
 
-		<!-- <a class="popup-with-zoom-anim" href="#small-dialog">Open with fade-zoom animation</a><br> -->
-		<!-- <a class="popup-with-move-anim" href="#small-dialog">Open with fade-slide animation</a> -->
-		
-		<!-- dialog itself, mfp-hide class is required to make dialog hidden -->
+		<!-- 結果表示ダイアログ -->
 		<div id="small-dialog" class="zoom-anim-dialog mfp-hide">
 			<h1 id="result">Dialog example</h1>
 		</div>
