@@ -106,12 +106,9 @@ body {
 }
 
 #myPieChart {
-  width: 400px;
-  height: 400px;
-  max-width: 900px;
+  max-width: calc((100vh - 75px - 48px - 50px - 50px - 8px - 20px - 50px) * 2);
   margin: 0 auto;
   border-radius: 50%;
-  display: block;
 }
 
 #triangle-mark {
