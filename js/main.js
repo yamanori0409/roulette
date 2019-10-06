@@ -188,9 +188,12 @@ function drawCirclePlot() {
 	// 乱数を生成（1.00~1.18で乱数を生成すればいい具合にばらけるので）
 	var index = Math.floor(Math.random() * 19);
 	// 移動距離
-	var incremental = 1 + index * 0.01;
+    var incremental = 1 + index * 0.01;
+    
+    // 移動距離の増分を乱数から生成
+    var incrementalIndex = Math.floor(Math.random() * 3);
 	// 移動距離の増分
-	var incrementalSpan = -0.0006; 
+	var incrementalSpan = -0.0001 * (incrementalIndex + 4); 
 
 	// アニメーションの実行
 	var timer = setInterval(function () {
@@ -257,22 +260,30 @@ function drawCirclePlot() {
 
 		// 結果マークが止まった位置のラジアン
 		var r = Math.atan2(moveElement.style.top.replace("px", "") - centerY, moveElement.style.left.replace("px", "") - centerX);
-		r = getAbs(r);
+        r = getAbs(r);
 
 		// 円の接点から当たり判定を行う。
 		myPieChart.data.datasets.forEach(function (dataset, i) {
 			var meta = myPieChart.getDatasetMeta(i);
 			if (!meta.hidden) {
 				meta.data.forEach(function (element) {
-					var start = getAbs(element._model.startAngle);
-					var end = getAbs(element._model.endAngle);
-					
-					if (end === 0) {
-						// 最終のアングルがちょうど0になった場合の補正。
-						end = 10;
-					}
+					var start = element._model.startAngle;
+					var end = element._model.endAngle;
+                    var start2 = 0.0;
+                    var end2 = -1.0;
 
-					if (start <= r && r <= end) {
+                    // 負の数の場合（円の右上領域の場合、１周分補正する（Math.atan2 と chart.jsのstartAngle・endAngleの仕様差を吸収する為））
+                    if (start < 0.0 && end < 0.0) {
+                        start += Math.PI * 2;
+                        end += Math.PI * 2;
+                    // 0をまたいだ場合、正の数の範囲と負の数の範囲を分割する（いずれかの範囲に収まった場合に当たり判定をする）
+                    } else if (start < 0.0 && end >= 0.0) {
+                        start += Math.PI * 2;
+                        end2 = end;
+                        end = Math.PI * 2;
+                    }
+
+					if ((start <= r && r <= end) || (start2 <= r && r <= end2)) {
 						var resultElement = document.getElementById('result');
 						resultElement.innerText = element._model.label;
 
@@ -280,8 +291,8 @@ function drawCirclePlot() {
 							items: {src: '#small-dialog'},
 							type: 'inline', 
 							closeBtnInside: true,
-						}, 0);
-					}
+                        }, 0);
+                    }
 				})
 			}
 		})
