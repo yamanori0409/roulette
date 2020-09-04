@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-	<link rel="stylesheet" href="css/styles.css">
+	<link rel="stylesheet" href="css/styles.min.css">
 	<link rel="stylesheet" href="css/magnific-popup.css">
 
 	<title>ルーレット</title>
@@ -17,24 +17,27 @@
 
 <body>
 	<div class="container" id="base">
-		<h1>ルーレット</h1>
-		<!-- 人数入力欄 -->
-		<div class="nice-wrap">
-			<input id="indexCount" class="nice-textbox" type="text" />
-			<label class="nice-label" for="Username">項目数</label>
-		</div>
-		<div class="btn-push-wrapper" style="height:50px;">
-			<a href="#" class="btn-push" onclick="drawPieChart()">作る</a>
-		</div>
+    <!-- 人数入力欄 -->
+    <div class="input-area-wrapper">
+      <div class="nice-wrap">
+        <input id="indexCount" class="nice-textbox" type="text" />
+        <label class="nice-label" for="Username">項目数</label>
+      </div>
+      <div class="btn-push-wrapper" style="height:50px;">
+        <a href="#" class="btn-push" onclick="drawPieChart()">作る</a>
+      </div>
+    </div>
 
-		<!-- ルーレットのマーク -->
-		<div id="triangle-mark"></div>
+    <div class="roulette-wrapper">
+      <!-- ルーレットのマーク -->
+      <div id="triangle-mark"></div>
 
-		<!-- ルーレット本体 -->
-		<canvas id="myPieChart"></canvas>
-		<div class="btn-push-wrapper" style="height:50px;">
-			<a href="#" id="btn-start" class="btn-start" onclick="drawCirclePlot()">スタート</a>
-		</div>
+      <!-- ルーレット本体 -->
+      <canvas id="myPieChart"></canvas>
+      <div class="btn-push-wrapper" style="height:50px;">
+        <a href="#" id="btn-start" class="btn-start" onclick="drawCirclePlot()">スタート</a>
+      </div>
+    </div>
 
 		<!-- 結果表示ダイアログ -->
 		<div id="small-dialog" class="zoom-anim-dialog mfp-hide">

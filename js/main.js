@@ -115,7 +115,7 @@ var backgroundColorList = [
  * 人数入力に応じた系統数で出力する
  */
 function drawPieChart() {
-	var indexValue = document.getElementById('indexCount').value;
+  var indexValue = document.getElementById('indexCount').value;
 	index = parseInt(indexValue);
 
 	labelList = new Array();
@@ -134,7 +134,7 @@ function drawPieChart() {
 	for (let i = 1; i <= index; i++) {
 		labelList.push(i);
 		if (i == largeIndex) {
-			dataList.push(index);
+			dataList.push(index * 10);
 		}
 		else {
 			dataList.push(1);
@@ -151,6 +151,8 @@ function drawPieChart() {
 	if (!myPieChart) {
 		myPieChart = new Chart(ctx, options);
 	}
+
+  // backgroundColorList = getColorList();
 
 	myPieChart.data = {
 		labels: labelList,
@@ -173,36 +175,54 @@ function drawPieChart() {
 	myPieChart.update();
 }
 
+function getColorList() {
+  var colors = [];
+  for(let i=0; i<20; i++) {
+    // 色はHue（色相）を変化させる。
+    // Saturation（彩度）とLightness（輝度）は固定。
+    const h = i * 30;
+    if (i % 2 == 0) {
+      colors.push(`hsl(${h}, 86%, 73%)`);
+    }
+    else {
+      colors.push(`hsl(${h}, 73%, 86%)`);
+    }
+      
+  }
+  return colors;
+}
+
+var counterTest = 1.00;
+
 /**
  * 円グラフの回りに三角形を描画する処理
  *
  */
 function drawCirclePlot() {
-	// 円周上を移動する要素
-	var moveElement = document.getElementById('triangle-mark');
-	moveElement.style.display = "block";
+  // 円周上を移動する要素
+  var moveElement = document.getElementById('triangle-mark');
+  moveElement.style.display = "block";
 
-	// 円の角度
-	var angle = 0;
+  // 円の角度
+  var angle = 0;
 
-	// 乱数を生成（1.00~1.18で乱数を生成すればいい具合にばらけるので）
-	var index = Math.floor(Math.random() * 19);
-	// 移動距離
-    var incremental = 1 + index * 0.01;
-    
-    // 移動距離の増分を乱数から生成
-    var incrementalIndex = Math.floor(Math.random() * 3);
-	// 移動距離の増分
-	var incrementalSpan = -0.0001 * (incrementalIndex + 4); 
+  // 乱数を生成（発生させる値の範囲とincrementalSpanには相関関係があるので、変更する場合は調整が必要）
+  var index = Math.floor(Math.random() * 1990);
 
-	// アニメーションの実行
-	var timer = setInterval(function () {
-		circumference();
-	}, 4);
-	
-	// アニメーションの処理
-	function circumference() {
-		if (moveElement.style.backgroundColor != "black") {
+  // 移動距離
+  var incremental = 0.9857 + index * 0.0001;
+  
+  // 移動距離の増分
+  var incrementalSpan = -0.0006;
+
+  // アニメーションの実行
+  var timer = setInterval(function () {
+    circumference();
+  }, 4);
+
+  // アニメーションの処理
+  function circumference() {
+    if (moveElement.style.backgroundColor != "black") {
 			moveElement.style.backgroundColor = "black";
 		}
 
@@ -269,19 +289,19 @@ function drawCirclePlot() {
 				meta.data.forEach(function (element) {
 					var start = element._model.startAngle;
 					var end = element._model.endAngle;
-                    var start2 = 0.0;
-                    var end2 = -1.0;
+          var start2 = 0.0;
+          var end2 = -1.0;
 
-                    // 負の数の場合（円の右上領域の場合、１周分補正する（Math.atan2 と chart.jsのstartAngle・endAngleの仕様差を吸収する為））
-                    if (start < 0.0 && end < 0.0) {
-                        start += Math.PI * 2;
-                        end += Math.PI * 2;
-                    // 0をまたいだ場合、正の数の範囲と負の数の範囲を分割する（いずれかの範囲に収まった場合に当たり判定をする）
-                    } else if (start < 0.0 && end >= 0.0) {
-                        start += Math.PI * 2;
-                        end2 = end;
-                        end = Math.PI * 2;
-                    }
+          // 負の数の場合（円の右上領域の場合、１周分補正する（Math.atan2 と chart.jsのstartAngle・endAngleの仕様差を吸収する為））
+          if (start < 0.0 && end < 0.0) {
+              start += Math.PI * 2;
+              end += Math.PI * 2;
+          // 0をまたいだ場合、正の数の範囲と負の数の範囲を分割する（いずれかの範囲に収まった場合に当たり判定をする）
+          } else if (start < 0.0 && end >= 0.0) {
+              start += Math.PI * 2;
+              end2 = end;
+              end = Math.PI * 2;
+          }
 
 					if ((start <= r && r <= end) || (start2 <= r && r <= end2)) {
 						var resultElement = document.getElementById('result');
@@ -291,8 +311,8 @@ function drawCirclePlot() {
 							items: {src: '#small-dialog'},
 							type: 'inline', 
 							closeBtnInside: true,
-                        }, 0);
-                    }
+            }, 0);
+          }
 				})
 			}
 		})
